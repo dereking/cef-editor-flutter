@@ -23,12 +23,4 @@ plugins {
     id("org.jetbrains.kotlin.android") version "2.1.10" apply false
 }
 
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
 include(":app")
