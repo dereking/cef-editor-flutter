@@ -1,0 +1,27 @@
+name: cef_editor
+description: >-
+  Cross-platform rich text (TinyMCE) editor for Flutter. Desktop uses CEF via
+  webview_cef, mobile uses native webviews, web uses an iframe — all sharing
+  the same TinyMCE editor core and JS bridge protocol.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+  flutter: '>=3.22.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  webview_cef:
+    path: ../third_party/webview_cef
+  web: ^1.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  assets:
+    - web_editor/

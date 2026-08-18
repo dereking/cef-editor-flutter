@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <title>Mail Editor</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+    .editor-wrap {
+      height: 100%;
+    }
+    .tox-tinymce {
+      border: none !important;
+      border-radius: 0 !important;
+      height: 100% !important;
+    }
+    .tox .tox-toolbar__primary {
+      background: #f5f5f5 !important;
+    }
+  </style>
+  <script type="module" src="/src/main.ts"></script>
+</head>
+<body>
+  <textarea id="editor"></textarea>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
