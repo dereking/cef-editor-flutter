@@ -25,6 +25,8 @@ set(CEF_EDITOR_WEB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../web_editor")
 # Resolve symlinks (flutter .plugin_symlinks) so MSBuild dependency tracking
 # sees real paths.
 get_filename_component(CEF_EDITOR_WEB_REAL "${CEF_EDITOR_WEB_DIR}" REALPATH)
+message(STATUS "cef_editor web dir: ${CEF_EDITOR_WEB_DIR}")
+message(STATUS "cef_editor web real: ${CEF_EDITOR_WEB_REAL}")
 set(CEF_EDITOR_STAMP "${CMAKE_BINARY_DIR}/cef_editor_dist.stamp")
 
 add_custom_command(
@@ -37,9 +39,8 @@ add_custom_command(
           "${CMAKE_BINARY_DIR}/runner/$<CONFIG>/cef-editor"
   COMMAND ${CMAKE_COMMAND} -E touch "${CEF_EDITOR_STAMP}"
   DEPENDS
+    "${CEF_EDITOR_WEB_REAL}/scripts/build.mjs"
     "${CEF_EDITOR_WEB_REAL}/package.json"
-    "${CEF_EDITOR_WEB_REAL}/vite.config.ts"
-    "${CEF_EDITOR_WEB_REAL}/src"
   COMMENT "Building cef_editor editor web assets"
   VERBATIM
 )
