@@ -21,6 +21,7 @@ let initialHtml = '';
 let initPromise: Promise<void> | null = null;
 let currentTheme: 'light' | 'dark' = 'light';
 let currentDevicePixelRatio = window.devicePixelRatio;
+let currentReadOnly = false;
 const pastedImageMarker = 'data-mail-pasted-image';
 
 function reportStartupError(error: unknown): void {
@@ -44,6 +45,7 @@ declare global {
         html: string;
         theme?: 'light' | 'dark';
         devicePixelRatio?: number;
+        readonly?: boolean;
       }): void;
       getHTML(): string;
       getText(): string;
@@ -137,9 +139,13 @@ function initEditor(): void {
           editor.setContent(initialHtml);
           initialHtml = '';
         }
-        // Move DOM focus into the editor body so the caret is active
-        // without requiring the user to Alt-Tab/click away and back.
-        editor.focus();
+        if (currentReadOnly) {
+          editor.mode.set('readonly');
+        } else {
+          // Move DOM focus into the editor body so the caret is active
+          // without requiring the user to Alt-Tab/click away and back.
+          editor.focus();
+        }
         // Attach custom right-click context menu
         new MailEditorContextMenu(editor);
         postToFlutter({ type: 'mail.editor.ready' });
@@ -187,6 +193,7 @@ window.MailEditor = {
   open(config) {
     console.log('[MailEditor] open() called, html length:', (config.html || '').length);
     initialHtml = config.html || '';
+    currentReadOnly = config.readonly === true;
     if (
       typeof config.devicePixelRatio === 'number' &&
       Number.isFinite(config.devicePixelRatio) &&
@@ -290,6 +297,7 @@ window.MailEditor = {
     return true;
   },
   setReadOnly(readOnly: boolean): void {
+    currentReadOnly = readOnly;
     const editor = tinymce.activeEditor;
     if (editor) {
       editor.mode.set(readOnly ? 'readonly' : 'design');

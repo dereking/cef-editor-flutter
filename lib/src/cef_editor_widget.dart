@@ -28,6 +28,7 @@ class RichTextEditorWidget extends StatefulWidget {
   final ValueChanged<EditorMessage>? onMessage;
   final RichTextEditorController? controller;
   final bool isDark;
+  final bool readOnly;
   final void Function(String message)? onDiagnostic;
 
   const RichTextEditorWidget({
@@ -37,6 +38,7 @@ class RichTextEditorWidget extends StatefulWidget {
     this.onMessage,
     this.controller,
     this.isDark = false,
+    this.readOnly = false,
     this.onDiagnostic,
   });
 
@@ -148,7 +150,8 @@ class _RichTextEditorWidgetState extends State<RichTextEditorWidget> {
     final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
     await host.evaluateJavascript(
       "window.MailEditor.open({html: '$escaped', theme: '$theme', "
-      'devicePixelRatio: $devicePixelRatio})',
+      'devicePixelRatio: $devicePixelRatio, '
+      'readonly: ${widget.readOnly}})',
     );
     _diagnostic('MailEditor.open() called');
   }

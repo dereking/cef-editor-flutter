@@ -41,14 +41,14 @@ class CefEditorHost implements RichTextEditorHost {
       ),
     );
 
+    await c.initialize('about:blank');
+    await c.ready;
     await c.setJavaScriptChannels({
       JavascriptChannel(
         name: 'MailFlutter',
         onMessageReceived: (m) => onMessage(m.message),
       ),
     });
-    await c.initialize('about:blank');
-    await c.ready;
     await c.loadUrl(url);
   }
 
