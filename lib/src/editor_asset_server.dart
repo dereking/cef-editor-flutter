@@ -49,19 +49,23 @@ class EditorAssetServer {
 
   Future<Uint8List?> _loadFromFileSystem(String assetPath) async {
     // assetPath format: packages/cef_editor/web_editor/dist/...
-    // cef_editor is a path dependency at ../cef-editor-flutter relative to the
-    // app directory. During flutter run, CWD is the app dir.
+    // The editor assets are published by the plugin's CMake build to
+    // <exeDir>/cef-editor (auto-built from source). Fall back to the source
+    // tree relative to CWD during flutter run.
     final parts = assetPath.split('/');
     final pkgIndex = parts.indexOf('cef_editor');
     if (pkgIndex < 0) return null;
 
     final relativePath = parts.sublist(pkgIndex + 1).join('/');
 
-    // Try relative to CWD (the app directory in debug mode).
-    final candidates = [
-      '../cef-editor-flutter/$relativePath',
-      'cef-editor-flutter/$relativePath',
-    ];
+    final candidates = <String>[];
+    try {
+      final exeDir = File(Platform.resolvedExecutable).parent.path;
+      candidates.add('$exeDir${Platform.pathSeparator}cef-editor$Platform.pathSeparator$relativePath');
+    } catch (_) {}
+    candidates
+      ..add('../cef-editor-flutter/$relativePath')
+      ..add('cef-editor-flutter/$relativePath');
 
     for (final candidate in candidates) {
       final file = File(candidate);
@@ -86,21 +90,8 @@ class EditorAssetServer {
 
     debugPrint('[EditorAssetServer] ${request.uri.path} -> $path');
     try {
-      final bytes = await rootBundle.load(path);
-      final data = bytes.buffer.asUint8List();
-      if (data.isEmpty) {
-        debugPrint('[EditorAssetServer] empty: $path');
-        request.response.statusCode = HttpStatus.notFound;
-      } else {
-        request.response.headers.set(
-          HttpHeaders.contentTypeHeader,
-          contentTypeFor(path),
-        );
-        request.response.add(data);
-      }
-    } catch (e) {
-      // Fall back to filesystem for assets not bundled (e.g. deeply nested
-      // TinyMCE skins that Flutter's asset bundling doesn't pick up).
+      // Prefer the CMake-published copy next to the executable (freshly built
+      // from source on desktop); fall back to the bundled flutter assets.
       final fsData = await _loadFromFileSystem(path);
       if (fsData != null && fsData.isNotEmpty) {
         request.response.headers.set(
@@ -109,9 +100,22 @@ class EditorAssetServer {
         );
         request.response.add(fsData);
       } else {
-        debugPrint('[EditorAssetServer] error loading $path: $e');
-        request.response.statusCode = HttpStatus.notFound;
+        final bytes = await rootBundle.load(path);
+        final data = bytes.buffer.asUint8List();
+        if (data.isEmpty) {
+          debugPrint('[EditorAssetServer] empty: $path');
+          request.response.statusCode = HttpStatus.notFound;
+        } else {
+          request.response.headers.set(
+            HttpHeaders.contentTypeHeader,
+            contentTypeFor(path),
+          );
+          request.response.add(data);
+        }
       }
+    } catch (e) {
+      debugPrint('[EditorAssetServer] error loading $path: $e');
+      request.response.statusCode = HttpStatus.notFound;
     } finally {
       await request.response.close();
       _diagnostic(

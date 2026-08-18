@@ -23,5 +23,9 @@ dev_dependencies:
   flutter_lints: ^4.0.0
 
 flutter:
+  plugin:
+    platforms:
+      windows:
+        pluginClass: CefEditorPluginCApi
   assets:
     - web_editor/
