@@ -7,4 +7,6 @@ export 'src/editor_body_builder.dart';
 export 'src/cef_editor_widget.dart';
 export 'src/editor_asset_server.dart'
     if (dart.library.js_interop) 'src/editor_asset_server_stub.dart';
-export 'src/cef/cef_editor_host.dart' if (dart.library.js_interop) 'src/web/web_editor_host.dart';
+export 'src/cef/cef_editor_host.dart'
+    if (dart.library.js_interop) 'src/web/web_editor_host.dart';
+export 'src/mobile/mobile_editor_host.dart';

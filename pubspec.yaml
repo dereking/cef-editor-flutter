@@ -18,6 +18,7 @@ dependencies:
       url: git@github.com:dereking/webview_cef.git
       ref: master
   web: ^1.0.0
+  webview_flutter: ^4.10.0
 
 dev_dependencies:
   flutter_test:
