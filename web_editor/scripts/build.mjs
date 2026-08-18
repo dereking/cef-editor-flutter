@@ -60,7 +60,9 @@ const viteBin = join(webEditorDir, 'node_modules', 'vite', 'bin', 'vite.js');
 if (!existsSync(viteBin)) {
   throw new Error(`vite not found at ${viteBin}; run "npm ci" in web_editor first`);
 }
-run(`node "${viteBin}" build --base=/mail-editor/ "${webEditorDir}"`);
+// Relative base so the built page works both served by the desktop asset
+// server (/mail-editor/...) and as a Flutter web asset (/assets/packages/...).
+run(`node "${viteBin}" build --base=./ "${webEditorDir}"`);
 run('node scripts/copy-tinymce-assets.cjs');
 
 console.log('[cef_editor] editor web assets built: web_editor/dist');
