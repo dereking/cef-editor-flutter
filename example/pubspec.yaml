@@ -1,0 +1,22 @@
+name: cef_editor_example
+description: Minimal web demo for the cef_editor package.
+publish_to: none
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cef_editor:
+    path: ../
+
+flutter:
+  uses-material-design: true
+  assets:
+    - skin_test.css
+    - ../web_editor/dist/skins/ui/oxide/content.css
+    - ../web_editor/dist/skins/ui/oxide/content.inline.css
+
+
+

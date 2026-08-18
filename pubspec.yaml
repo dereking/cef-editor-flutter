@@ -14,7 +14,9 @@ dependencies:
   flutter:
     sdk: flutter
   webview_cef:
-    path: ../third_party/webview_cef
+    git:
+      url: git@github.com:dereking/webview_cef.git
+      ref: master
   web: ^1.0.0
 
 dev_dependencies:
@@ -28,4 +30,6 @@ flutter:
       windows:
         pluginClass: CefEditorPluginCApi
   assets:
-    - web_editor/
+    - web_editor/dist/
+    - web_editor/dist/assets/
+    - web_editor/dist/skins/
