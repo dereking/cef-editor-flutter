@@ -76,7 +76,19 @@ class CefEditorHost implements RichTextEditorHost {
 
   @override
   Future<void> requestFocus() async {
-    _controller?.requestFocus();
+    final controller = _controller;
+    if (controller == null) return;
+    if (controller.hasFocus) {
+      // A fresh compose window already owns Flutter focus (autofocus) before
+      // CEF reports readiness, so Flutter emits no later focus-change
+      // notification and never re-sends setClientFocus(true). Re-assert the
+      // native CEF focus explicitly, otherwise the first click is processed
+      // by an unfocused browser and the editor looks read-only until the user
+      // clicks another field first.
+      await controller.setClientFocus(true);
+    } else {
+      controller.requestFocus();
+    }
   }
 
   @override
